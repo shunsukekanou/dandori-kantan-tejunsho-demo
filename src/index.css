@@ -67,6 +67,10 @@ textarea.in { resize: vertical; }
 .badge.sm { padding: 0; width: 26px; height: 26px; display: inline-grid; place-items: center; font-size: 14px; flex: none; }
 .mini { border: 2px solid var(--line); background: #fff; border-radius: 10px; min-width: 44px; min-height: 40px; cursor: pointer; font-weight: 700; padding: 0 8px; }
 .mini:hover:not(:disabled) { border-color: var(--main-hi); background: #eef6f2; }
+.step-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: start; }
+.step-inputs { display: grid; gap: 8px; }
+.step-inputs .in { padding: 8px 10px; font-size: 16px; }
+.step-inputs textarea.in { min-height: 92px; }
 .thumb, .ph { width: 100%; border-radius: 10px; display: block; background: #e3e7e0; aspect-ratio: 4 / 3; object-fit: cover; }
 .send p { color: var(--muted); font-size: 15px; }
 .check { display: grid; gap: 10px; }
@@ -103,6 +107,8 @@ textarea.in { resize: vertical; }
 .tool.on { background: var(--main); border-color: var(--main); color: #fff; }
 .tool:hover:not(.on) { border-color: var(--main-hi); background: #eef6f2; }
 .marker-canvas { width: 100%; height: auto; border-radius: 10px; border: 2px solid var(--line); cursor: crosshair; touch-action: none; background: #e3e7e0; display: block; }
+.text-step { display: grid; gap: 4px; background: #fff4cc; border: 2px solid #e7cf75; border-radius: 10px; padding: 8px 10px; }
+.text-step label { font-weight: 700; font-size: 15px; }
 .text-in { border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; background: #fff; }
 .count { margin-left: auto; font-size: 14px; color: var(--muted); }
 .foot { margin-top: 20px; font-size: 13px; color: var(--muted); text-align: center; }
@@ -126,9 +132,16 @@ textarea.in { resize: vertical; }
 .pnote { font-size: 11pt; line-height: 1.6; }
 .pcaution { border: 1.5px solid #111; border-left-width: 5px; padding: 1.5mm 2.5mm; font-size: 10.5pt; }
 .ptools { font-size: 10.5pt; color: #222; }
+@media (min-width: 861px) {
+  .edit-grid .marker { position: sticky; top: 130px; }
+}
 @media (max-width: 860px) {
   .desk { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
   .edit-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
   .drop, .print-bar { grid-template-columns: 1fr; }
   .print-bar .btn { width: 100%; }
 }

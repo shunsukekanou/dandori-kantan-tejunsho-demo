@@ -19,7 +19,7 @@ type Mode = 'field' | 'check' | 'desk' | 'print'
 
 const TABS: { mode: Mode; label: string; sub: string }[] = [
   { mode: 'field', label: '現場で撮る', sub: 'スマホ' },
-  { mode: 'check', label: '1ステップ確認', sub: 'スマホ' },
+  { mode: 'check', label: '確認', sub: 'スマホ' },
   { mode: 'desk', label: '机で仕上げ', sub: 'PC' },
   { mode: 'print', label: 'A4で印刷', sub: 'PC' },
 ]
@@ -178,7 +178,7 @@ export default function App() {
           </p>
         )}
         {mode === 'field' && <FieldView manual={manual} update={update} patchStep={patchStep} move={move} remove={remove} addPhotos={addPhotos} exportFile={exportFile} loadSample={loadSample} reset={() => { setManual(emptyManual()); setSel(''); setMsg('最初からやり直せます。') }} goCheck={() => switchMode('check')} />}
-        {mode === 'check' && <CheckView manual={manual} idx={idx} setIdx={setIdx} loadSample={loadSample} />}
+        {mode === 'check' && <CheckView manual={manual} idx={idx} setIdx={setIdx} loadSample={loadSample} onBack={() => switchMode('field')} />}
         {mode === 'desk' && <DeskView manual={manual} sel={sel} setSel={setSel} update={update} patchStep={patchStep} move={move} remove={remove} importText={importText} loadSample={loadSample} />}
         {mode === 'print' && <PrintView manual={manual} loadSample={loadSample} />}
       </main>
@@ -269,9 +269,13 @@ function FieldView({ manual, update, patchStep, move, remove, addPhotos, exportF
                 <ConfirmButton className="mini" label="削除" onYes={() => remove(s.id)} />
               </div>
             </div>
-            <MarkedImg step={s} className="thumb" />
-            <input className="in" value={s.title} onChange={(e) => patchStep(s.id, { title: e.target.value })} placeholder="仮タイトル（例：治具をはずす）" aria-label={`STEP ${i + 1} の仮タイトル`} />
-            <input className="in" value={s.memo} onChange={(e) => patchStep(s.id, { memo: e.target.value })} placeholder="一言メモ（例：ボルトは2本）" aria-label={`STEP ${i + 1} の一言メモ`} />
+            <div className="step-body">
+              <MarkedImg step={s} className="thumb" />
+              <div className="step-inputs">
+                <input className="in" value={s.title} onChange={(e) => patchStep(s.id, { title: e.target.value })} placeholder="仮タイトル（例：治具をはずす）" aria-label={`STEP ${i + 1} の仮タイトル`} />
+                <textarea className="in" rows={3} value={s.memo} onChange={(e) => patchStep(s.id, { memo: e.target.value })} placeholder="一言メモ（例：ボルトは2本）" aria-label={`STEP ${i + 1} の一言メモ`} />
+              </div>
+            </div>
           </li>
         ))}
       </ol>
@@ -296,7 +300,7 @@ function FieldView({ manual, update, patchStep, move, remove, addPhotos, exportF
 }
 
 // ---------------- 1ステップ確認（スマホ） ----------------
-function CheckView({ manual, idx, setIdx, loadSample }: { manual: Manual; idx: number; setIdx: (n: number) => void; loadSample: () => void }) {
+function CheckView({ manual, idx, setIdx, loadSample, onBack }: { manual: Manual; idx: number; setIdx: (n: number) => void; loadSample: () => void; onBack: () => void }) {
   const n = manual.steps.length
   const i = Math.min(idx, Math.max(0, n - 1))
   const step = manual.steps[i]
@@ -356,6 +360,9 @@ function CheckView({ manual, idx, setIdx, loadSample }: { manual: Manual; idx: n
         </button>
       </div>
       <p className="hint center">写真を左右になぞっても、めくれます。</p>
+      <button type="button" className="btn sub big back" onClick={onBack}>
+        確認をやめて、撮影の画面に戻る
+      </button>
     </section>
   )
 }

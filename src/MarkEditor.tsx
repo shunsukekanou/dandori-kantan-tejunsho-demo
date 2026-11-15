@@ -24,6 +24,10 @@ export default function MarkEditor({ photo, marks, onChange }: Props) {
   const [redo, setRedo] = useState<Mark[]>([])
   const [drag, setDrag] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null)
   const [warn, setWarn] = useState('')
+  const textRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (tool === 'text') textRef.current?.focus()
+  }, [tool])
 
   useEffect(() => {
     let alive = true
@@ -64,7 +68,8 @@ export default function MarkEditor({ photo, marks, onChange }: Props) {
     if (tool === 'text') {
       const t = text.trim()
       if (!t) {
-        setWarn('先に、写真に入れたい文字を、下の欄に書いてください。')
+        setWarn('先に、写真に入れたい文字を、上の欄に書いてください。')
+        textRef.current?.focus()
         return
       }
       onChange([...marks, { type: 'text', x1: p.x, y1: p.y, x2: p.x, y2: p.y, text: t }])
@@ -116,11 +121,15 @@ export default function MarkEditor({ photo, marks, onChange }: Props) {
         ))}
       </div>
       <p className="hint">{current.hint}</p>
+      {tool === 'text' && (
+        <div className="text-step">
+          <label htmlFor="mark-text">① 写真に入れる文字を書く</label>
+          <input id="mark-text" ref={textRef} className="text-in" value={text} onChange={(e) => { setText(e.target.value); setWarn('') }} placeholder="例：ここを2回押す" maxLength={30} />
+          <p className="hint">② そのあと、写真の「文字を置きたい場所」を押します。続けて押すと、同じ文字をいくつも置けます。</p>
+        </div>
+      )}
       <canvas ref={canvasRef} className="marker-canvas" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} aria-label="写真に書き込む" />
       {warn && <p className="warn">{warn}</p>}
-      {tool === 'text' && (
-        <input className="text-in" value={text} onChange={(e) => setText(e.target.value)} placeholder="例：ここを2回押す" maxLength={30} aria-label="写真に入れる文字" />
-      )}
       <div className="tool-row">
         <button type="button" className="btn sub" onClick={undo} disabled={marks.length === 0}>
           1つ戻す
